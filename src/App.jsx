@@ -35,7 +35,7 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Previsão do tempo</h1>
+      <h1>Weather Hub</h1>
       <input
         ref={inputRef}
         type="text"
@@ -45,8 +45,6 @@ function App() {
       {weather && <WeatherInformations weather={weather} />}
       {weather5Days && <WeatherInformations5Days weather5Days={weather5Days} />}
       {error && <p className="error-message">{error}</p>} 
-      {weather && <WeatherInformations weather={weather}/>}  
-      {weather5Days && <WeatherInformations5Days weather5Days={weather5Days} />} 
     </div>
   );
 }
