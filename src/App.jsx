@@ -1,5 +1,4 @@
 import { useState, useRef } from "react";
-import axios from "axios";
 import "./App.css";
 import WeatherInformations from "./components/WeatherInformations/WeatherInformations";
 import WeatherInformations5Days from "./components/WeatherInformations5Days/WeatherInformations5Days";
@@ -12,19 +11,27 @@ function App() {
   const inputRef = useRef();
 
   async function searchCity() {
-    const city = inputRef.current.value;
+    const city = inputRef.current.value.trim();
     const key = "cec3be60896cae8b668a43cb5a38fefd";
 
-    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&lang=pt_br&units=metric`;
+    if (!city) return;
 
+    const url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${key}&lang=pt_br&units=metric`;
     const url5Days = `https://api.openweathermap.org/data/2.5/forecast?q=${city}&appid=${key}&lang=pt_br&units=metric`;
 
     try {
-      const apiInfo = await axios.get(url);
-      const apiInfo5Days = await axios.get(url5Days);
+      const response = await fetch(url);
+      const response5Days = await fetch(url5Days);
 
-      setWeather(apiInfo.data);
-      setWeather5Days(apiInfo5Days.data);
+      if (!response.ok || !response5Days.ok) {
+        throw new Error("Erro ao buscar dados.");
+      }
+
+      const data = await response.json();
+      const data5Days = await response5Days.json();
+
+      setWeather(data);
+      setWeather5Days(data5Days);
       setError("");
     } catch (err) {
       setError("Cidade não encontrada. Tente novamente.");
@@ -32,13 +39,13 @@ function App() {
       setWeather5Days(null);
     }
 
-    inputRef.current.value = "";
+    inputRef.current.value = ""; 
   }
 
-   const handleKeyDown = (e) => {
-    if (e.key === "Enter") 
+  function handleKeyDown(e) {
+    if (e.key === "Enter") {
       searchCity();
-    
+    }
   }
 
   return (
@@ -53,7 +60,7 @@ function App() {
       <button onClick={searchCity}>Buscar</button>
       {weather && <WeatherInformations weather={weather} />}
       {weather5Days && <WeatherInformations5Days weather5Days={weather5Days} />}
-      {error && <p className="error-message">{error}</p>} 
+      {error && <p className="error-message">{error}</p>}
     </div>
   );
 }
