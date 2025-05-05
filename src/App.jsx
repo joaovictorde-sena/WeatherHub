@@ -31,6 +31,14 @@ function App() {
       setWeather(null);
       setWeather5Days(null);
     }
+
+    inputRef.current.value = "";
+  }
+
+   const handleKeyDown = (e) => {
+    if (e.key === "Enter") 
+      searchCity();
+    
   }
 
   return (
@@ -40,6 +48,7 @@ function App() {
         ref={inputRef}
         type="text"
         placeholder="Digite o nome para a cidade"
+        onKeyDown={handleKeyDown}
       />
       <button onClick={searchCity}>Buscar</button>
       {weather && <WeatherInformations weather={weather} />}
